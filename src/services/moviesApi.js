@@ -5,7 +5,6 @@ const API_KEY = '1536e7dddf218c385f99496618571b3b';
 const getMoviesByAxios = axios.create({
   baseURL: 'https://api.themoviedb.org/3',
   method: 'GET',
-  status_code: '200',
 });
 
 export const fetchTrendingMovies = async () => {
@@ -31,10 +30,11 @@ export const fetchMovieActors = async movieId => {
 };
 
 export const fetchMovieReviews = async movieId => {
-  const { data: results } = await getMoviesByAxios(
+  const {
+    data: { results },
+  } = await getMoviesByAxios(
     `movie/${movieId}/reviews?api_key=${API_KEY}&language=en-US&page=1`,
   );
-  console.log(results);
   return results;
 };
 
@@ -44,6 +44,5 @@ export const fetchMovieSearch = async query => {
   } = await getMoviesByAxios(
     `search/movie?api_key=${API_KEY}&language=en-US&query=${query}&page=1&include_adult=false`,
   );
-  console.log(results);
   return results;
 };

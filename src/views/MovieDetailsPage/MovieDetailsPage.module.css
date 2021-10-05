@@ -1,0 +1,15 @@
+button {
+  display: block;
+}
+
+.link {
+  display: block;
+}
+
+.link::before {
+  content: ' - ';
+}
+
+ul {
+  list-style-type: square;
+}

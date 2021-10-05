@@ -1,14 +1,18 @@
 import { useState, useEffect } from 'react';
+import { useLocation, useHistory } from 'react-router-dom';
 import { fetchMovieSearch } from '../../services/moviesApi';
+import { toast } from 'react-toastify';
 import SearchForm from '../../components/SearchForm/SearchForm';
-import s from '../MoviesPage/MoviesPage.module.css';
-import { Link } from 'react-router-dom';
+import MoviesList from '../../components/MoviesList/MoviesList';
+
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function MoviesPage() {
-  const [movieName, setMovieName] = useState(null);
-  const [movies, setMovies] = useState(null);
+  const [movieName, setMovieName] = useState('');
+  const [movies, setMovies] = useState([]);
 
-  const urlImage = 'https://image.tmdb.org/t/p/w500';
+  const location = useLocation();
+  const history = useHistory();
 
   useEffect(() => {
     if (!movieName) {
@@ -16,24 +20,41 @@ export default function MoviesPage() {
     }
 
     async function getMovies() {
-      try {
-        const movies = await fetchMovieSearch(movieName);
-
-        if (movies.length === 0) {
-          return;
-        }
-
-        setMovies(prevState => [...prevState, ...movies]);
-      } catch (error) {
-        console.error(error.message());
+      const movies = await fetchMovieSearch(movieName);
+      if (!movies.length) {
+        return toast.error(
+          `Movie with the name ${movieName} is not in the catalog`,
+        );
       }
+
+      setMovies(prevState => [...prevState, ...movies]);
     }
 
     getMovies();
   }, [movieName]);
 
-  const handleFormSubmit = movieName => {
-    setMovieName(movieName);
+  useEffect(() => {
+    if (location.search === '') {
+      return;
+    }
+
+    const searchQuery = new URLSearchParams(location.search).get('query');
+
+    setMovieName(searchQuery);
+  }, [location.search]);
+
+  const handleFormSubmit = newMovieName => {
+    if (movieName === newMovieName) {
+      return;
+    }
+
+    history.push({
+      ...location,
+      search: `query=${newMovieName}`,
+      state: location,
+    });
+
+    setMovieName(newMovieName);
     setMovies([]);
   };
 
@@ -41,27 +62,7 @@ export default function MoviesPage() {
     <>
       <SearchForm onSubmit={handleFormSubmit} />
 
-      {movies && (
-        <ul className={s.movies_gallery}>
-          {movies.map(({ id, name, title, poster_path }) => (
-            <li key={id}>
-              <Link to={`/movies/${id}`}>
-                <img
-                  src={
-                    poster_path !== null
-                      ? `${urlImage + poster_path}`
-                      : 'https://cdn.browshot.com/static/images/not-found.png'
-                  }
-                  alt={title ?? name}
-                  width="350px"
-                  height="450px"
-                />
-                <h2>{title}</h2>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      )}
+      <MoviesList movies={movies} />
     </>
   );
 }

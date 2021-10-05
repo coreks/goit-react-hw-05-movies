@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 
+import 'react-toastify/dist/ReactToastify.css';
 import s from '../SearchForm/SearchForm.module.css';
 
 export default function SearchForm({ onSubmit }) {
@@ -13,7 +15,7 @@ export default function SearchForm({ onSubmit }) {
     e.preventDefault();
 
     if (movieName.trim() === '') {
-      return;
+      return toast.error(`Enter the name of the movie!`);
     }
 
     onSubmit(movieName);

@@ -1,0 +1,12 @@
+.film_card {
+  display: flex;
+}
+
+.film_description {
+  margin-left: 60px;
+  display: flex;
+  flex-direction: column;
+}
+.link {
+  display: block;
+}
