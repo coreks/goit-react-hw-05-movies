@@ -4,22 +4,20 @@ import { ToastContainer } from 'react-toastify';
 import Container from './components/Container/Container';
 import AppBar from './components/AppBar/AppBar';
 
-import './App.css';
-
-const HomePage = lazy(() =>
+const AsyncHomePage = lazy(() =>
   import('./views/HomePage/HomePage.jsx' /* webpackChunkName: 'home-page' */),
 );
-const MoviesPage = lazy(() =>
+const AsyncMoviesPage = lazy(() =>
   import(
     './views/MoviesPage/MoviesPage.jsx' /* webpackChunkName: 'movies-page' */
   ),
 );
-const MovieDetailsPage = lazy(() =>
+const AsyncMovieDetailsPage = lazy(() =>
   import(
     './views/MovieDetailsPage/MovieDetailsPage.jsx' /* webpackChunkName: 'movie-details-page' */
   ),
 );
-const NotFoundPage = lazy(() =>
+const AsyncNotFoundPage = lazy(() =>
   import(
     './views/NotFoundPage/NotFoundPage.jsx' /* webpackChunkName: 'not-found-page' */
   ),
@@ -32,21 +30,10 @@ function App() {
 
       <Suspense fallback={<div>LOADING...</div>}>
         <Switch>
-          <Route path="/" exact>
-            <HomePage />
-          </Route>
-
-          <Route path="/movies" exact>
-            <MoviesPage />
-          </Route>
-
-          <Route path="/movies/:movieId">
-            <MovieDetailsPage />
-          </Route>
-
-          <Route>
-            <NotFoundPage />
-          </Route>
+          <Route path="/" exact component={AsyncHomePage} />
+          <Route path="/movies" exact component={AsyncMoviesPage} />
+          <Route path="/movies/:movieId" component={AsyncMovieDetailsPage} />
+          <Route component={AsyncNotFoundPage} />
         </Switch>
       </Suspense>
 

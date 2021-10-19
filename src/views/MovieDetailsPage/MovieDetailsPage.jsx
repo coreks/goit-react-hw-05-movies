@@ -15,10 +15,10 @@ import PageTitle from '../../components/PageTitle/PageTitle';
 
 import s from '../MovieDetailsPage/MovieDetailsPage.module.css';
 
-const Cast = lazy(() =>
+const AsyncCast = lazy(() =>
   import('../Cast/Cast.jsx' /* webpackChunkName: 'cast-page' */),
 );
-const Reviews = lazy(() =>
+const AsyncReviews = lazy(() =>
   import('../Reviews/Reviews.jsx' /* webpackChunkName: 'rewiews-page' */),
 );
 
@@ -55,24 +55,31 @@ export default function MovieDetailsView() {
 
       <PageTitle text="Additional information" />
 
-      <NavLink to={`${url}/cast`} className={s.link}>
+      <NavLink
+        to={{
+          state: location.state,
+          pathname: `${url}/cast`,
+        }}
+        className={s.link}
+      >
         Cast
       </NavLink>
 
-      <NavLink to={`${url}/reviews`} className={s.link}>
+      <NavLink
+        to={{
+          state: location.state,
+          pathname: `${url}/reviews`,
+        }}
+        className={s.link}
+      >
         Reviews
       </NavLink>
 
       <hr />
 
       <Suspense fallback={<div>LOADING...</div>}>
-        <Route path={`${path}/cast`}>
-          <Cast />
-        </Route>
-
-        <Route path={`${path}/reviews`}>
-          <Reviews />
-        </Route>
+        <Route path={`${path}/cast`} component={AsyncCast} />
+        <Route path={`${path}/reviews`} component={AsyncReviews} />
       </Suspense>
     </>
   );

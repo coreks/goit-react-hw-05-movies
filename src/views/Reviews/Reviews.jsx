@@ -23,7 +23,7 @@ export default function Reviews() {
         </ul>
       )}
 
-      {reviews.length === 0 && <p>We don't have any reviews for this movie</p>}
+      {!reviews.length && <p>We don't have any reviews for this movie</p>}
     </>
   );
 }
